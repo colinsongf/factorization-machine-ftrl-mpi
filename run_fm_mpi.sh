@@ -7,5 +7,12 @@
 #mv core backup/"$tt"
 #make
 #rm log/*
-/home/xiaoshu/hadoop_job/bin/mpirun -np 4 ./train /home/xiaoshu/hadoop_job/newsToNewsModel/relative_news/gbdt_click/feature/onehot_encoding/libsvm_train_onehotencoding.data  /home/xiaoshu/hadoop_job/newsToNewsModel/relative_news/gbdt_click/feature/onehot_encoding/libsvm_test_onehotencoding.data
-#/home/xiaoshu/hadoop_job/bin/mpirun -np 2 ./train ./data/agaricus.txt.train ./data/agaricus.txt.test
+rocess_number=3
+Ip=("10.101.2.89" "10.101.2.90")
+for ip in ${Ip[@]}
+do
+    ssh worker@$ip rm /home/worker/xiaoshu/factorization-machine-ftrl-mpi/train
+done
+scp train worker@10.101.2.89:/home/worker/xiaoshu/factorization-machine-ftrl-mpi/.
+scp train worker@10.101.2.90:/home/worker/xiaoshu/factorization-machine-ftrl-mpi/.
+mpirun -f ./hosts -np $process_number ./train ftrl 5 100 ./data/agaricus.txt.train ./data/agaricus.txt.test
